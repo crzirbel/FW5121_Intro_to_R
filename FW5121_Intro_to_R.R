@@ -22,7 +22,6 @@
 #' 5. Visualization
 #' 6. Mapping
 #' 7. Re-create some figures & maps!
-#' 
 
 
 # R setup & tutorial ------------------------------------------------------
@@ -43,6 +42,41 @@
 #' 2. The Console
 #' 3. Environment
 #' 4. Files/Plots/Packages/Help
+
+#Run code by pressing ctrl+enter (cmd+enter on a mac) on a line of code within an R script
+7*2*2
+
+##assigning variables
+x<-3
+x
+
+y=4
+y
+
+#We can store more than just numbers
+z<-"hello world"
+z
+
+#we can also store multiple values within a variable.
+w<-c(1,2,3)
+w
+
+#we can also store a matrix or data frame of numbers, or characters
+a<-matrix(1:9, nrow=3)
+a
+
+##Functions##
+#Every command starts with a function and an open parentheses
+#then a series of arguments seperated by commas followed by a closed parentheses
+
+##getting help##
+##a question mark before a function pulls up the help file asociated with said function
+?mean()
+
+#two question marks locates all occurences of the word within all base R and loaded package help files
+??mean()
+
+
 
 
 
