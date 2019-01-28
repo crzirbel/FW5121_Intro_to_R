@@ -68,6 +68,7 @@ a
 ##Functions##
 #Every command starts with a function and an open parentheses
 #then a series of arguments seperated by commas followed by a closed parentheses
+mean(w)
 
 ##getting help##
 ##a question mark before a function pulls up the help file asociated with said function
@@ -76,7 +77,17 @@ a
 #two question marks locates all occurences of the word within all base R and loaded package help files
 ??mean()
 
+#We can also create our own functions. Here is a function the calculates the mean.
+#redundant I know but hopefully you can see the utility
+my_mean_func<-function(x){
+  x_mean<-sum(x)/length(x)
+  return(x_mean)
+}
 
+b<-c(1,2,3,4)
+my_mean_func(b)
+
+#
 
 
 
