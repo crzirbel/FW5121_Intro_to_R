@@ -133,10 +133,29 @@ sd <- function(x){
 sample <- round(rnorm(30,16,2), digits = 1) # draw 30 random numbers from a normal dist with mean=16 and sd=2 
 sd(sample) # result ought to have an SD somewhere around 2!
 
+##loading data
+#exercise goes here (HW data)
 
+#cleaning messy data
 
+##workiong with datasets##
+#load data
+ipbes.data<-read.csv("https://datadryad.org/bitstream/handle/10255/dryad.107691/PAs_IPBES.csv?sequence=5")
 
+#calculations on ipbes.data (excel comparison)
 
+#manipulate ipbes.data (subsetting) plotting raw data
+
+#calculations on data
+
+##merging datasets (economic, tourism)
+
+#plotting
+
+#mapping
+
+#cut em loose
+#own figure
 
 
 
