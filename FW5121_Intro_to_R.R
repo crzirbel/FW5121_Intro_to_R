@@ -22,6 +22,7 @@
 #' 5. Visualization
 #' 6. Mapping
 #' 7. Re-create some figures & maps!
+#' 8. Other resources for learning R?
 
 
 # R setup & tutorial ------------------------------------------------------
@@ -87,7 +88,21 @@ my_mean_func<-function(x){
 b<-c(1,2,3,4)
 my_mean_func(b)
 
-#
+##installing/loading packages##
+
+#Base R has many useful functions but R also has an archive of user created functions.
+#you can download these packages using install.packages()
+
+install.packages("")
+
+#The load the package into your R session using library()
+
+library()
+
+##Loading data into R##
+
+wdpa.data<-read.csv()
+
 
 
 
