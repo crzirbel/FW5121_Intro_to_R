@@ -42,6 +42,10 @@
 #' 3. Environment
 #' 4. Files/Plots/Packages/Help
 
+##commenting##
+#on each line, everything after a pound sign will not be calculated, but instead will run as a comment
+#It is good practice to thoroughly comment your code. Your collaborators and future you will thank you
+
 #Run code by pressing ctrl+enter (cmd+enter on a mac) on a line of code within an R script
 7*2*2
 
@@ -73,7 +77,7 @@ mean(w)
 ##a question mark before a function pulls up the help file asociated with said function
 ?mean() 
 
-#on each line, everything after a pound sign will not be calculated, but instead will run as a comment
+
 ?mean() #F1 while cursor is in the function is a shortcut for this
 
 #two question marks locates all occurences of the word within all base R and loaded package help files
@@ -104,9 +108,11 @@ library(janitor)
 ## Loops
 #We can use loops to complete repetitive calculations and tasks:
 
-for (i in 1:length(b)){
-  print(b[i]^2)
+for (i in 1:length(b)){ #for instances 1 through howerver long b is
+  print(b[i]^2)         #return the value of b^2
 }
+
+#R has different types of loops including for, repeat, and while. We wont cover them here but they are useful
 
 ## Exercise: Write a function that will calculate the standard deviation of a 
 #population from a sample of the pop (sample SD - 
@@ -135,6 +141,7 @@ getwd()
 
 setwd() #add the file path to the folder where the files you want are stored.
 #The file path needs to be within "" and seperated with / or \\
+
 #Rstudio's environment tab also has an import data menu (refrain from using this, lacks reproducibility)
 
 #R projects are also a powerful tool for managing your code and files (especially when you are working on multiple projects)
@@ -157,6 +164,11 @@ ipbes.data<-read.csv("https://datadryad.org/bitstream/handle/10255/dryad.107691/
                      na.strings = "n/a")
 ipbes.data<-clean_names(ipbes.data)
 
+head(ipbes.data)
+
+summary(ipbes.data)
+
+str(ipbes.data)
 
 #calculations on ipbes.data (excel comparison)
 
@@ -164,7 +176,28 @@ ipbes.data<-clean_names(ipbes.data)
 
 #calculations on data
 
-##merging datasets (economic, tourism)
+##merging datasets (other data?)
+#GDP by country
+gdp<-read.csv("GDP.csv")
+
+#load in a table from Brooks et al. 2016 that has country info for the regions used in the IPBES report
+ipbes.country.region<-read.csv("https://github.com/crzirbel/FW5121_Intro_to_R/raw/master/ipbes_country_region_lookup.csv")
+
+#merge data files
+ipbes.region.gdp<-merge(ipbes.country.region, gdp, by= "country", all.x=T)
+
+#now we can aggregate the data so that it matches the IPBES protected area data
+ipbes.gdp.ag<-aggregate(gdp~ipbes.region+ipbes.sub.region, data=ipbes.region.gdp, sum)
+
+#before we can merge the dataset we need to make sure the column names match up
+#you can see that ipbes.data use the variable name "region" while ipbes.country.region uses the name "ipbes.region"
+
+#rewrite names for the ipbes.country.region data
+names(ipbes.country.region)
+names(ipbes.country.region)<-c("country", "ISO3", "region", "subregion")
+names(ipbes.country.region)
+
+#merge data frames
 
 ##plotting
 library(ggplot2)
