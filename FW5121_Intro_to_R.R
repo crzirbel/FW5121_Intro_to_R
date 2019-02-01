@@ -7,8 +7,6 @@
 #                                                        #
 #========================================================#
 
-#####
-
 # outline -----------------------------------------------------------------
 #' ## Outline
 #' 0. R setup & tutorial
@@ -25,7 +23,7 @@
 #' 8. Other resources for learning R?
 
 
-# R setup & tutorial ------------------------------------------------------
+# R setup & basics ------------------------------------------------------
 
 ##Why use R?##
 # It's free
@@ -97,15 +95,11 @@ my_mean_func(b)
 #Base R has many useful functions but R also has an archive of user created functions.
 #you can download these packages using install.packages()
 
-install.packages("")
+install.packages("janitor")
 
 #The load the package into your R session using library()
 
-library()
-
-##Loading data into R##
-
-wdpa.data<-read.csv()
+library(janitor)
 
 ## Loops
 #We can use loops to complete repetitive calculations and tasks:
@@ -133,14 +127,23 @@ sd <- function(x){
 sample <- round(rnorm(30,16,2), digits = 1) # draw 30 random numbers from a normal dist with mean=16 and sd=2 
 sd(sample) # result ought to have an SD somewhere around 2!
 
-##loading data
+##loading data##
 #exercise goes here (HW data)
 
 #cleaning messy data
 
-##workiong with datasets##
+# Workiong with datasets -------------------------------------------------
 #load data
 ipbes.data<-read.csv("https://datadryad.org/bitstream/handle/10255/dryad.107691/PAs_IPBES.csv?sequence=5")
+
+#Veiw(), summary(), str()
+View(ipbes.data)
+
+#reloading data with na.strings and clean_names to fix problems in the df
+ipbes.data<-read.csv("https://datadryad.org/bitstream/handle/10255/dryad.107691/PAs_IPBES.csv?sequence=5",
+                     na.strings = "n/a")
+ipbes.data<-clean_names(ipbes.data)
+
 
 #calculations on ipbes.data (excel comparison)
 
@@ -150,7 +153,8 @@ ipbes.data<-read.csv("https://datadryad.org/bitstream/handle/10255/dryad.107691/
 
 ##merging datasets (economic, tourism)
 
-#plotting
+##plotting
+library(ggplot2)
 
 #mapping
 
