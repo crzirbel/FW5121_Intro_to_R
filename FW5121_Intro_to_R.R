@@ -72,27 +72,50 @@ mean(w)
 
 ##getting help##
 ##a question mark before a function pulls up the help file asociated with said function
-?mean()
+?mean() 
+
+#on each line, everything after a pound sign will not be calculated, but instead will run as a comment
+?mean() #F1 while cursor is in the function is a shortcut for this
 
 #two question marks locates all occurences of the word within all base R and loaded package help files
 ??mean()
 
 #We can also create our own functions. Here is a function the calculates the mean.
 #redundant I know but hopefully you can see the utility
-my_mean_func<-function(x){
-  x_mean<-sum(x)/length(x)
-  return(x_mean)
+
+my_mean_func<-function(x){ # my_mean_function[names the function] <- function(x[names arguments you'll use in maikng fn]){[starts function]
+  x_mean<-sum(x)/length(x) # tells fn to do this calculation
+  return(x_mean) # finally, print the calculated value
 }
 
 b<-c(1,2,3,4)
 my_mean_func(b)
 
-#
+## Loops
+#We can use loops to complete repetitive calculations and tasks:
 
+for (i in 1:length(b)){
+  print(b[i]^2)
+}
 
+## Exercise: Write a function that will calculate the standard deviation of a 
+#population from a sample of the pop (sample SD - 
+# https://statistics.laerd.com/statistical-guides/measures-of-spread-standard-deviation.php).
+# Then use your function to caclulate sd from this sample: 
 
+sd <- function(x){
+  a <- c() # make an empty variable "a" to store intermediate calculations
+  for (i in 1:length(x)){ # for numbers 1-length of our sample, 
+    a[i] <- (x[i] - mean(x))^2 # for each position (1 through length(sample)) in "a", calculate for that same position in "x", the dif of each value from mean of "x", and square that value; 
+  }
+  return(sqrt((sum(a)/(length(x)-1)))) # calculate & return the square root of the sum of all the values in "a" divided by the size of our sample minus 1.
+}
 
-
+#test the function using a known sample
+# R has built in stats including a nice set of distributions: dnorm(), dpois(), etc.
+# The prefix "r" will select a random set from the distribution chosed, like "rnorm(n, mean, sd)"
+sample <- round(rnorm(30,16,2), digits = 1) # draw 30 random numbers from a normal dist with mean=16 and sd=2 
+sd(sample) # result ought to have an SD somewhere around 2!
 
 
 
