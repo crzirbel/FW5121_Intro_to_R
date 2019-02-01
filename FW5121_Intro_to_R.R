@@ -127,6 +127,19 @@ sd <- function(x){
 sample <- round(rnorm(30,16,2), digits = 1) # draw 30 random numbers from a normal dist with mean=16 and sd=2 
 sd(sample) # result ought to have an SD somewhere around 2!
 
+##setting a working directory##
+#The working directory is where R will look for the files you load
+#R will also output files to your working directory
+#you can view your current working directory using getwd()
+getwd()
+
+setwd() #add the file path to the folder where the files you want are stored.
+#The file path needs to be within "" and seperated with / or \\
+#Rstudio's environment tab also has an import data menu (refrain from using this, lacks reproducibility)
+
+#R projects are also a powerful tool for managing your code and files (especially when you are working on multiple projects)
+#We wont cover them here but check out this post for more info: https://r4ds.had.co.nz/workflow-projects.html
+
 ##loading data##
 #exercise goes here (HW data)
 
@@ -161,8 +174,9 @@ library(ggplot2)
 #cut em loose
 #own figure
 
+# Other resources for learning R -------------------------------------------
 
-
+#The swirl package
 
 
 
