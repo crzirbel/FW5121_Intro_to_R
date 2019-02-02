@@ -42,6 +42,24 @@
 #' 3. Environment
 #' 4. Files/Plots/Packages/Help
 
+#If you can think of it, R can probably do it.
+#for example
+install.packages(c("devtools"))
+library(devtools)
+install_github("Gibbsdavidl/CatterPlots")
+library(CatterPlots)
+meow<-multicat(xs=-10:10, ys=rnorm(21),
+               cat=c(1,2,3,4,5,6,7,8,9,10),
+               catcolor=list('black'),
+               canvas=c(-0.1,1.1, -0.1, 1.1),
+               xlab="some cats", ylab="other cats", main="Random Cats")
+#or we can do this
+devtools::install_github("melissanjohnson/pupR")
+library(pupR)
+pupR()
+pupR()
+pupR()
+
 ##commenting##
 #on each line, everything after a pound sign will not be calculated, but instead will run as a comment
 #It is good practice to thoroughly comment your code. Your collaborators and future you will thank you
@@ -203,7 +221,14 @@ names(ipbes.country.region)
 library(ggplot2)
 
 #mapping
+library(sf)
+ipbes.sp<-st_read("shapefile/EEZv8_WVS_DIS_V3_ALL_final_v7disIPBES.shp") #file currently only stored locally
 
+ggplot(ipbes.sp)+
+  geom_sf(aes(fill = IPBES_regi)) +
+  geom_sf_label(aes(label = IPBES_sub)) #need to update colors and labeling, create
+
+plot(st_geometry(ipbes.sp))
 #cut em loose
 #own figure
 
