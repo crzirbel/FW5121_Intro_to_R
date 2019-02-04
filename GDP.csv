@@ -1,16 +1,16 @@
 country,gdp
-United States,19390604
+United States of America,19390604
 China,12237700
 Japan,4872137
 Germany,3677439
-United Kingdom,2622434
+United Kingdom of Great Britain and Northern Ireland,2622434
 India,2597491
 France,2582501
 Brazil,2055506
 Italy,1934798
 Canada,1653043
 Russian Federation,1577524
-"Korea, Rep.",1530751
+Republic of Korea,1530751
 Australia,1323421
 Spain,1311320
 Mexico,1149919
@@ -23,8 +23,9 @@ Argentina,637590
 Sweden,538040
 Poland,524510
 Belgium,492681
+Venezuela (Bolivarian Republic of),482400
 Thailand,455221
-"Iran, Islamic Rep.",439514
+Iran (Islamic Republic of),439514
 Austria,416596
 Norway,398832
 United Arab Emirates,382575
@@ -42,8 +43,8 @@ Pakistan,304952
 Chile,277076
 Finland,251885
 Bangladesh,249724
-"Egypt, Arab Rep.",235369
-Vietnam,223864
+Egypt,235369
+Viet Nam,223864
 Portugal,217571
 Czech Republic,215726
 Romania,211803
@@ -62,7 +63,7 @@ Ukraine,112154
 Morocco,109139
 Puerto Rico,105035
 Ecuador,103057
-Slovak Republic,95769
+Slovakia,95769
 Sri Lanka,87175
 Cuba,87133
 Ethiopia,80561
@@ -73,12 +74,13 @@ Oman,72643
 Myanmar,69322
 Luxembourg,62404
 Panama,61838
+Syrian Arab Republic,59150
 Costa Rica,57057
 Bulgaria,56832
 Uruguay,56157
 Croatia,54849
 Belarus,54442
-Tanzania,52090
+United Republic of Tanzania,52090
 Lebanon,51844
 Libya,50984
 "Macao SAR, China",50361
@@ -89,11 +91,11 @@ Lithuania,47168
 Turkmenistan,42355
 Serbia,41432
 Azerbaijan,40748
-Côte d'Ivoire,40389
+Cote d’Ivoire,40389
 Tunisia,40257
 Jordan,40068
-Bolivia,37509
-"Congo, Dem. Rep.",37241
+Bolivia (Plurinational State of),37509
+Democratic Republic of the Congo,37241
 Bahrain,35307
 Cameroon,34799
 Latvia,30264
@@ -101,6 +103,7 @@ Paraguay,29735
 Estonia,25921
 Uganda,25891
 Zambia,25809
+Democratic People’s Republic of Korea,25000
 El Salvador,24805
 Nepal,24472
 Iceland,23909
@@ -108,13 +111,14 @@ Honduras,22979
 Cambodia,22158
 Trinidad and Tobago,22105
 Cyprus,21652
+Reunion,21300
 Papua New Guinea,21089
 Afghanistan,20815
-"Yemen, Rep.",18213
+Yemen,18213
 Bosnia and Herzegovina,18169
 Zimbabwe,17846
 Botswana,17407
-Lao PDR,16853
+Lao People’s Democratic Republic,16853
 Senegal,16375
 Mali,15288
 Georgia,15159
@@ -129,35 +133,40 @@ Burkina Faso,12873
 Malta,12538
 Equatorial Guinea,12487
 Mozambique,12334
-"Bahamas, The",12162
+Bahamas,12162
 Brunei Darussalam,12128
+State of Palestine,11950
 Armenia,11537
 Madagascar,11500
 Mongolia,11488
-"Macedonia, FYR",11338
+The former Yugoslav Republic of Macedonia,11338
+Eritrea,10767
 Guinea,10496
 Chad,9981
 Benin,9274
 Rwanda,9137
-"Congo, Rep.",8723
+New Caledonia,8980
+Congo,8723
 Haiti,8408
-Moldova,8128
+Republic of Moldova,8128
 Niger,8120
-Kyrgyz Republic,7565
+Kyrgyzstan,7565
 Somalia,7369
 Tajikistan,7146
 Kosovo,7129
 Isle of Man,6792
+Monaco,6500
 Malawi,6303
 Liechtenstein,6289
 Guam,5793
+French Polynesia,5623
 Fiji,5061
 Mauritania,5025
 Togo,4813
 Barbados,4797
 Montenegro,4774
 Maldives,4597
-Eswatini,4409
+Swaziland,4409
 Sierra Leone,3774
 Virgin Islands (U.S.),3765
 Guyana,3676
@@ -168,34 +177,41 @@ Timor-Leste,2955
 South Sudan,2904
 Greenland,2706
 Lesotho,2639
+Mayotte,2600
 Bhutan,2512
 Faroe Islands,2477
 Liberia,2158
 Central African Republic,1949
 Djibouti,1845
 Belize,1838
-Cabo Verde,1754
-St. Lucia,1712
+Cape Verde,1754
+Saint Lucia,1712
 San Marino,1659
 Antigua and Barbuda,1532
 Seychelles,1486
-Guinea-Bissau,1347
+Guinea Bissau,1347
 Solomon Islands,1303
-Northern Mariana Islands,1242
+Commonwealth of the Northern Mariana Islands,1242
 Grenada,1119
-"Gambia, The",1015
-St. Kitts and Nevis,946
+Gambia,1015
+Saint Kitts and Nevis,946
+Western Sahara,908.9
 Vanuatu,863
 Samoa,857
-St. Vincent and the Grenadines,790
+Saint Vincent and the Grenadines,790
 American Samoa,658
 Comoros,649
 Dominica,563
 Tonga,426
-São Tomé and Principe,391
-"Micronesia, Fed. Sts.",336
+Sao Tome and Principe,391
+Micronesia (Federated States of),336
+Cook Islands,311
 Palau,292
 Marshall Islands,199
 Kiribati,196
 Nauru,114
+Wallis and Futuna,60
 Tuvalu,40
+Niue,10
+Tokelau,10
+Pitcairn Island,0.14943
