@@ -297,11 +297,29 @@ library(ggplot2)
 library(sf)
 ipbes.sp<-st_read("shapefile/EEZv8_WVS_DIS_V3_ALL_final_v7disIPBES.shp") #file currently only stored locally
 
+#I used mapshaper.com to simplify the shapefile. I recommend doing this when working with large shapefiles
+#especially when you aren't looking for publication quality figures right away. This will greatly reduce plotting time.
+
+#The original shapefile contained over 19 million verticies. I simplified it to 2.5% of its orginal complexity
+#Let's see how many verticies are there now
+sum(rapply(st_geometry(ipbes.sp), nrow))
+#Much simplier
+
+#The orginal file was also 293MB (too big for github)
+#This file is only 7.6MB
+
+#The unsimplified version of this file took >30 minutes to plot on my laptop.
+#The developers working on ggplot know about the plotting time issues and it is an active area of development.
+
 ggplot(ipbes.sp)+
   geom_sf(aes(fill = IPBES_regi)) +
   geom_sf_label(aes(label = IPBES_sub)) #need to update colors and labeling, create
 
 plot(st_geometry(ipbes.sp))
+
+#map_data package
+
+
 #cut em loose
 #own figure
 
