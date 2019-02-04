@@ -33,6 +33,11 @@
 # Graphics and data visualization
 # powerful, cutting-edge analytics
 # A robust, vibrant community
+# easily expandable to include
+#  - projects: "packages" of files & settings: R Studio Projects
+#  - version control: github, others
+#  - annotated, easily readable code: R Markdown
+#  - custom data oriented web apps: R Shiny
 
 ##R basics##
 
@@ -63,12 +68,13 @@ pupR()
 ##commenting##
 #on each line, everything after a pound sign will not be calculated, but instead will run as a comment
 #It is good practice to thoroughly comment your code. Your collaborators and future you will thank you
+1+1 #you can also comment on a line of working code, as long as the code goes before "#"
 
 #Run code by pressing ctrl+enter (cmd+enter on a mac) on a line of code within an R script
 7*2*2
 
 ##assigning variables
-x<-3
+x<-3 #"Alt -" is the shortcut for "<-" 
 x
 
 y=4
@@ -89,19 +95,19 @@ a
 ##Functions##
 #Every command starts with a function and an open parentheses
 #then a series of arguments seperated by commas followed by a closed parentheses
+w
 mean(w)
 
 ##getting help##
 ##a question mark before a function pulls up the help file asociated with said function
 ?mean() 
 
-
-?mean() #F1 while cursor is in the function is a shortcut for this
+mean() #F1 while cursor is in the function is a shortcut for this in R studio
 
 #two question marks locates all occurences of the word within all base R and loaded package help files
 ??mean()
 
-#We can also create our own functions. Here is a function the calculates the mean.
+#We can also create our own functions. Here is a function that calculates the mean.
 #redundant I know but hopefully you can see the utility
 
 my_mean_func<-function(x){ # my_mean_function[names the function] <- function(x[names arguments you'll use in maikng fn]){[starts function]
@@ -121,21 +127,20 @@ install.packages("janitor")
 
 #The load the package into your R session using library()
 
-library(janitor)
+library(janitor) #remember: F1 within "janitor" will pull up helpfile
 
 ## Loops
 #We can use loops to complete repetitive calculations and tasks:
-
-for (i in 1:length(b)){ #for instances 1 through howerver long b is
+b
+for (i in 1:length(b)){ #for instances 1 through however long b is
   print(b[i]^2)         #return the value of b^2
 }
 
 #R has different types of loops including for, repeat, and while. We wont cover them here but they are useful
 
-## Exercise: Write a function that will calculate the standard deviation of a 
-#population from a sample of the pop (sample SD - 
-# https://statistics.laerd.com/statistical-guides/measures-of-spread-standard-deviation.php).
-# Then use your function to caclulate sd from this sample: 
+## Exercise: Write a function that will calculate the standard deviation of a population from a sample of the pop (sample SD) - 
+# https://statistics.laerd.com/statistical-guides/measures-of-spread-standard-deviation.php
+# Then use your function to caclulate sd from a known sample: 
 
 sd <- function(x){
   a <- c() # make an empty variable "a" to store intermediate calculations
@@ -165,12 +170,77 @@ setwd() #add the file path to the folder where the files you want are stored.
 #R projects are also a powerful tool for managing your code and files (especially when you are working on multiple projects)
 #We wont cover them here but check out this post for more info: https://r4ds.had.co.nz/workflow-projects.html
 
-##loading data##
-#exercise goes here (HW data)
+
+# loading data into R -----------------------------------------------------
+
+## HW data EXERCISE ##
+# 1. Download the data for today's problem set from here: 
+
+# 2. Save it to your working directory location (use getwd() and setwd() to troubleshoot)
+
+# 3a. Read the data into R by assiging it to a variable, like:  mydata <- read.csv("filename.csv")
+er.data <- read.csv("Ecoregion_Data_Set.csv")
+
+# 3b. Read the data directly into R from a web URL. First visit the URL and see what R will be using: https://raw.githubusercontent.com/crzirbel/FW5121_Intro_to_R/master/Ecoregion_Data_Set.csv
+er.data <- read.csv("https://raw.githubusercontent.com/crzirbel/FW5121_Intro_to_R/master/Ecoregion_Data_Set.csv")
+
+# 4. Inspect what you loaded using View()
+View(er.data)
+
+# 5. Compare to the Excel spreadsheet. Why are there blank rows?
+View(er.data)
+## END EXERCISE ##
 
 #cleaning messy data
+#There are lots of ways that imported data can be "messy." R and packages within offer many tools to clean up datasets!
 
-# Workiong with datasets -------------------------------------------------
+# can select rows or columns from a data.frame (or matrix, list, etc.) using brackets
+er.data[1] # view column 1
+er.data[12,1] # row 12, column 1
+er.data[12,"Ecoregon"] # can call columns by names
+er.data[1:3,] # rows 1-3, all columns implied by leaving blank after column
+er.data[-c(1:3),] # all rows except rows 1-3, all cols (just prints it, doesn't remove it from dataset)
+er.data <- er.data[-c(1:3),] # reassign er.data
+
+## Drop last row EXERCISE ##
+er.data[,"X"]
+names(er.data)
+er.data <- er.data[,-7]
+## End EXERCISE ##
+
+#clean column names
+names(er.data) <- tolower(names(er.data))
+
+names(er.data)[2] <- "land.value.usdperha"
+names(er.data)[5:6] <- c("tot.area.milha","existing.prot.area.ha")
+
+# We want the units of tot area on same scale as existing prot area. We can calculate a new column of values using the previous set of columns
+er.data$tot.area.ha <- er.data$tot.area.milha * 1000000
+
+
+## Calculation EXERCISE ##
+# Proportion of each ecoregion that is protected:
+er.data$proportion.prot <- er.data$existing.prot.area.ha/er.data$tot.area.ha
+
+# sort the regions by proportion protected
+order(er.data[,"proportion.prot"], decreasing = F) # what are the row #s for proportion.prot in increasing order
+er.data[order(er.data[,"proportion.prot"], decreasing = F), c("ecoregon","proportion.prot")] # print the ecoregion and proportion protected in the order we just described
+
+## End EXERCISE ##
+# there are better solutions for this in other packages. Example:
+library(data.table)
+er.dt <- data.table(er.data)
+setkey(er.dt, proportion.prot)
+er.dt[ ,.(ecoregon, proportion.prot)]
+
+# Now have a look at the data using a few additonal functions: str(), summary(), head(), and tail(). Annotate each use with what the function tell you about the data: 
+
+str(er.data) # data frame, tells class of each var
+summary(er.data) # desc stats by column
+head(er.data) # first 6
+tail(er.data) # last 6
+
+# Working with datasets -------------------------------------------------
 #load data
 ipbes.data<-read.csv("https://datadryad.org/bitstream/handle/10255/dryad.107691/PAs_IPBES.csv?sequence=5")
 
@@ -202,7 +272,7 @@ gdp<-read.csv("GDP.csv")
 ipbes.country.region<-read.csv("https://github.com/crzirbel/FW5121_Intro_to_R/raw/master/ipbes_country_region_lookup.csv")
 
 #merge data files
-ipbes.region.gdp<-merge(ipbes.country.region, gdp, by= "country", all.x=T)
+ipbes.region.gdp<-merge(ipbes.country.region, gdp, by.x = "country.ipbes", by.y = "country", all.x=T)
 
 #now we can aggregate the data so that it matches the IPBES protected area data
 ipbes.gdp.ag<-aggregate(gdp~ipbes.region+ipbes.sub.region, data=ipbes.region.gdp, sum)
@@ -219,6 +289,9 @@ names(ipbes.country.region)
 
 ##plotting
 library(ggplot2)
+
+
+
 
 #mapping
 library(sf)
