@@ -191,6 +191,10 @@ View(er.data)
 View(er.data)
 ## END EXERCISE ##
 
+
+# cleaning and manipulating data ------------------------------------------
+
+
 #cleaning messy data
 #There are lots of ways that imported data can be "messy." R and packages within offer many tools to clean up datasets!
 
@@ -233,12 +237,6 @@ er.dt <- data.table(er.data)
 setkey(er.dt, proportion.prot)
 er.dt[ ,.(ecoregon, proportion.prot)]
 
-# Now have a look at the data using a few additonal functions: str(), summary(), head(), and tail(). Annotate each use with what the function tell you about the data: 
-
-str(er.data) # data frame, tells class of each var
-summary(er.data) # desc stats by column
-head(er.data) # first 6
-tail(er.data) # last 6
 
 # Working with datasets -------------------------------------------------
 #load data
@@ -287,9 +285,32 @@ names(ipbes.country.region)
 
 #merge data frames
 
+
+
+# plotting using ggplot ---------------------------------------------------
 ##plotting
 library(ggplot2)
 
+ggplot(ipbes.data, aes(subregion, total_area_km2))+ 
+  geom_point()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  
+subset(ipbes.data, region== "Americas")
+
+prot_plot <- ggplot(subset(ipbes.data, region== "Americas"), 
+            aes(subregion, total_proportion_in_protected_areas))+ 
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+americas.data <- subset(ipbes.data, region== "Americas")[,c(2,5,8,11)]
+names(americas.data)
+
+library(tidyr)
+americas.data <- gather(americas.data, key = "metric", value = "proportion", 2:4)
+
+ggplot(americas.data, aes(subregion, proportion, fill = metric))+ 
+  geom_bar(stat = "identity", position = "dodge")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
 
