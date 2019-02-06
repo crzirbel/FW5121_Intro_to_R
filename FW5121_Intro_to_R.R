@@ -261,26 +261,23 @@ gdp<-read.csv("GDP.csv")
 #load in a table from Brooks et al. 2016 that has country info for the regions used in the IPBES report
 ipbes.country.region<-read.csv("https://github.com/crzirbel/FW5121_Intro_to_R/raw/master/ipbes_country_region_lookup.csv")
 
-#merge data files
+#merge data frames
 ipbes.region.gdp<-merge(ipbes.country.region, gdp, by.x = "country.ipbes", by.y = "country", all.x=T)
 
 #now we can aggregate the data so that it matches the IPBES protected area data
 ipbes.gdp.ag<-aggregate(gdp~ipbes.region+ipbes.sub.region, data=ipbes.region.gdp, sum)
 
-#before we can merge the dataset we need to make sure the column names match up
-#you can see that ipbes.data use the variable name "region" while ipbes.country.region uses the name "ipbes.region"
+#merge gdp and protected area data frames
+ipbes.gdp.proc<-merge(ipbes.data,ipbes.gdp.ag, by.x="subregion", by.y="ipbes.sub.region")
 
-#rewrite names for the ipbes.country.region data
-names(ipbes.country.region)
-names(ipbes.country.region)<-c("country", "ISO3", "region", "subregion")
-names(ipbes.country.region)
-
-#merge data frames
-
-
+head(ipbes.gdp.proc)
 
 # plotting using ggplot ---------------------------------------------------
+<<<<<<< HEAD
 ##plotting##
+=======
+library(ggplot2)
+>>>>>>> d61f6371d5544f794e9628ec54dc16db820aa43c
 
 #baseplot
 #there is built-in plotting capability in R
@@ -308,6 +305,9 @@ am.prot.prop <- ggplot(subset(ipbes.data, region== "Americas"),
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 am.prot.prop+
   geom_col(aes(y = subset(ipbes.data, region== "Americas")$proportion_of_exclusive_economic_zone_in_protected_areas), alpha = .5)
+
+#facets
+
 
 americas.data <- subset(ipbes.data, region== "Americas")[,c(2,5,8,11)]
 names(americas.data)
@@ -343,13 +343,11 @@ ggplot(americas.data, aes(subregion, percent, fill = metric))+
         panel.grid.minor = element_blank()
         )
 
-
-
 #mapping
 library(sf)
 ipbes.sp<-st_read("shapefile/EEZv8_WVS_DIS_V3_ALL_final_v7disIPBES.shp") #file currently only stored locally
 
-#I used mapshaper.com to simplify the shapefile. I recommend doing this when working with large shapefiles
+#I used mapshaper.org to simplify the shapefile. I recommend doing this when working with large shapefiles
 #especially when you aren't looking for publication quality figures right away. This will greatly reduce plotting time.
 
 #The original shapefile contained over 19 million verticies. I simplified it to 2.5% of its orginal complexity
@@ -365,21 +363,65 @@ sum(rapply(st_geometry(ipbes.sp), nrow))
 
 #To differenciate our regions and the type of protected area lets combine two character columns using paste()
 ipbes.sp$IPBES_regi_type<-as.factor(paste(ipbes.sp$IPBES_regi,ipbes.sp$type, sep= "_"))
-colors<-c("lightblue", "orange", "green")
 
+#Just some code to make the plot look better
+#This matches the colors with the Brooks et al. figure
+colors<-c("#BEDAFF", "#FFE5B2", "#FFD380", "#B9E1A5", "#89CD66", "#DAC4E8", 
+          "#C19ED6", "#DDA4AD", "#CE6667", "#E5E1E0", "#CCCCCC")
+
+#Here I create a coordinate df to plot the region names
+ipbes.coords<-as.data.frame(sf::st_coordinates(st_point_on_surface(ipbes.sp)))
+ipbes.coords$IPBES_sub<-ipbes.sp$IPBES_sub
+ipbes.coords$type<-ipbes.sp$type
+#This only keeps the labels for the "Land" so the map doesn't get crowded
+ipbes.coords<-ipbes.coords[ipbes.coords$type%in%"Land",]
+#Here I create a line break in two of the longer names using \n
+ipbes.coords$IPBES_sub <- plyr::revalue(ipbes.coords$IPBES_sub, c("East Africa and adjacent islands"= "East Africa and\nadjacent islands",
+                                                                  "Central and Western Europe"= "Central and Western\nEurope"))
+#Lets plot the map now
 ggplot(ipbes.sp)+
-  geom_sf(aes(fill = IPBES_regi, values= colors)) +
-  geom_sf_label(aes(label = IPBES_sub)) + #need to update colors and labeling, create
+  geom_sf(aes(fill = IPBES_regi_type)) +
+  scale_fill_manual(values= colors) +
+  geom_text(data = ipbes.coords, aes(X, Y, label = IPBES_sub), size= 1.75,
+            colour = "black", fontface= "bold") +
   theme(text = element_text(size=20),
         panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line = element_line(size=.7, color="black"),
         legend.position = "none",axis.title=element_blank(),
         axis.text=element_blank(),
         axis.ticks=element_blank())
-
-plot(st_geometry(ipbes.sp))
+#There are a few issues with the positioning of the labels but this looks pretty
+#similar to the Brooks et al. Figure
 
 #map_data package
+library(mapdata)
+library(ggmap)
 
+#load a simple data frame that plots countries from the mapdata package
+world<-map_data("world")
+
+#rename countries in world to match ipbes.region.proc
+
+
+#merge data frames
+ipbes.region.proc<-merge(ipbes.country.region, ipbes.data, by.x = "ipbes.sub.region", by.y= "subregion")
+map.ipbes<-merge(world, ipbes.region.proc, by.x="region", by.y= "country.ipbes", all.x=T)
+
+
+#merging reorder our data.frame we need to put it back so that ggplot can plot correctly
+map.ipbes<-map.ipbes[order(map.ipbes$order),]
+
+#plot of the world (much simplier than the shapefile and no need to use mapshaper)
+ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  geom_polygon(color = "black", fill = NA) +
+  theme_nothing()
+
+#lets add some data on protecte areas (by subregion)
+ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  geom_polygon(data=map.ipbes, color = "black", aes(fill = total_proportion_in_protected_areas)) +
+  scale_fill_gradient(low = "blue", high = "red", space = "Lab", na.value = "white") +
+  theme_nothing()
 
 #cut em loose
 #own figure
