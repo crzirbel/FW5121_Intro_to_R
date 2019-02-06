@@ -37,6 +37,7 @@
 #  - version control: github, others
 #  - annotated, easily readable code: R Markdown
 #  - custom data oriented web apps: R Shiny
+#  - linking to databases (when your dataset is too big to be stored locally!)
 
 ##R basics##
 
@@ -118,7 +119,6 @@ b<-c(1,2,3,4)
 my_mean_func(b)
 
 ##installing/loading packages##
-
 #Base R has many useful functions but R also has an archive of user created functions.
 #you can download these packages using install.packages()
 
@@ -128,7 +128,7 @@ install.packages("janitor")
 
 library(janitor) #remember: F1 within "janitor" will pull up helpfile
 
-## Loops
+##Loops##
 #We can use loops to complete repetitive calculations and tasks:
 b
 for (i in 1:length(b)){ #for instances 1 through however long b is
@@ -137,7 +137,8 @@ for (i in 1:length(b)){ #for instances 1 through however long b is
 
 #R has different types of loops including for, repeat, and while. We wont cover them here but they are useful
 
-## Exercise: Write a function that will calculate the standard deviation of a population from a sample of the pop (sample SD) - 
+## Exercise##
+#Write a function that will calculate the standard deviation of a population from a sample of the pop (sample SD) - 
 # https://statistics.laerd.com/statistical-guides/measures-of-spread-standard-deviation.php
 # Then use your function to caclulate sd from a known sample: 
 
@@ -148,10 +149,12 @@ sd <- function(x){
   }
   return(sqrt((sum(a)/(length(x)-1)))) # calculate & return the square root of the sum of all the values in "a" divided by the size of our sample minus 1.
 }
+##End Exercise##
 
+##Built in distributions##
 #test the function using a known sample
-# R has built in stats including a nice set of distributions: dnorm(), dpois(), etc.
-# The prefix "r" will select a random set from the distribution chosed, like "rnorm(n, mean, sd)"
+#R has built in stats including a nice set of distributions: dnorm(), dpois(), etc.
+#The prefix "r" will select a random set from the distribution used, like "rnorm(n, mean, sd)"
 sample <- round(rnorm(30,16,2), digits = 1) # draw 30 random numbers from a normal dist with mean=16 and sd=2 
 sd(sample) # result ought to have an SD somewhere around 2!
 
@@ -171,29 +174,27 @@ setwd() #add the file path to the folder where the files you want are stored.
 
 # loading data into R -----------------------------------------------------
 
-## HW data EXERCISE ##
-# 1. Download the data for today's problem set from here: 
+##Exercise: HW Data##
+# 1. Download the data for today's problem set from Canvas. 
 
 # 2. Save it to your working directory location (use getwd() and setwd() to troubleshoot)
 
 # 3a. Read the data into R by assiging it to a variable, like:  mydata <- read.csv("filename.csv")
 er.data <- read.csv("Ecoregion_Data_Set.csv")
 
-# 3b. Read the data directly into R from a web URL. First visit the URL and see what R will be using: https://raw.githubusercontent.com/crzirbel/FW5121_Intro_to_R/master/Ecoregion_Data_Set.csv
+# 3b. Read the data directly into R from a web URL. First visit the URL and view to see what R will be using as data: https://github.com/crzirbel/FW5121_Intro_to_R. Click on the Ecoregion_Data_Set.csv and view as Raw. Copy link and assign it to a variable using read.csv() Ex: read.csv("https...Ecoregion_Data_Set.csv") 
 er.data <- read.csv("https://raw.githubusercontent.com/crzirbel/FW5121_Intro_to_R/master/Ecoregion_Data_Set.csv")
 
 # 4. Inspect what you loaded using View()
 View(er.data)
 
-# 5. Compare to the Excel spreadsheet. Why are there blank rows?
+# 5. Compare to the Excel spreadsheet from Moodle. Why are there blank rows & columns?
 View(er.data)
-## END EXERCISE ##
-
+##END Exercise##
 
 # cleaning and manipulating data ------------------------------------------
 
-
-#cleaning messy data
+##cleaning datasets##
 #There are lots of ways that imported data can be "messy." R and packages within offer many tools to clean up datasets!
 
 # can select rows or columns from a data.frame (or matrix, list, etc.) using brackets
@@ -204,11 +205,11 @@ er.data[1:3,] # rows 1-3, all columns implied by leaving blank after column
 er.data[-c(1:3),] # all rows except rows 1-3, all cols (just prints it, doesn't remove it from dataset)
 er.data <- er.data[-c(1:3),] # reassign er.data
 
-## Drop last row EXERCISE ##
+##Exercise: Drop last column##
 er.data[,"X"]
 names(er.data)
 er.data <- er.data[,-7]
-## End EXERCISE ##
+##END Exercise##
 
 #clean column names
 names(er.data) <- tolower(names(er.data))
@@ -219,17 +220,16 @@ names(er.data)[5:6] <- c("tot.area.milha","existing.prot.area.ha")
 # (Compare to excel) We want the units of tot area on same scale as existing prot area. We can calculate a new column of values using the previous set of columns
 er.data$tot.area.ha <- er.data$tot.area.milha * 1000000
 
-
-## Calculation EXERCISE ##
+##Exercise: Calculation##
 # Proportion of each ecoregion that is protected:
 er.data$proportion.prot <- er.data$existing.prot.area.ha/er.data$tot.area.ha
 
 # (Compare to excel) sort the regions by proportion protected
 order(er.data[,"proportion.prot"], decreasing = F) # what are the row #s for proportion.prot in increasing order
 er.data[order(er.data[,"proportion.prot"], decreasing = F), c("ecoregon","proportion.prot")] # print the ecoregion and proportion protected in the order we just described
-
 ## End EXERCISE ##
-# there are better solutions for this in other packages. Example:
+
+# there may be better solutions for many tasks in other packages. Example:
 library(data.table)
 er.dt <- data.table(er.data)
 setkey(er.dt, proportion.prot)
@@ -280,19 +280,34 @@ names(ipbes.country.region)
 
 
 # plotting using ggplot ---------------------------------------------------
-##plotting
-library(ggplot2)
+##plotting##
 
-ggplot(ipbes.data, aes(subregion, total_area_km2))+ 
-  geom_point()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-  
+#baseplot
+#there is built-in plotting capability in R
+plot(data = ipbes.data, total_protected_areas_km2 ~ region, xlab = "", xaxt = "n" )
+axis(1, at=1:8, labels=levels(ipbes.data$region), las = 2, cex.axis = 0.8)
+
+levels(ipbes.data$region)
+
+#ggplot
+#using ggplot allows far more flexibility in your plotting, and a friendlier syntax
+# https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+
+ggplot(ipbes.data, aes(region, total_area_km2))+ # build a plotting space 
+  geom_point()+ # map some data into that space
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # adjust things
+
+# Lets re-create a figure from Brooks et al. 2016:
 subset(ipbes.data, region== "Americas")
 
-prot_plot <- ggplot(subset(ipbes.data, region== "Americas"), 
-            aes(subregion, total_proportion_in_protected_areas))+ 
-  geom_bar(stat = "identity")+
+
+# can only plot one variable?
+am.prot.prop <- ggplot(subset(ipbes.data, region== "Americas"), 
+  aes(subregion, total_proportion_in_protected_areas))+ 
+  geom_col(alpha = .5)+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+am.prot.prop+
+  geom_col(aes(y = subset(ipbes.data, region== "Americas")$proportion_of_exclusive_economic_zone_in_protected_areas), alpha = .5)
 
 americas.data <- subset(ipbes.data, region== "Americas")[,c(2,5,8,11)]
 names(americas.data)
@@ -300,9 +315,33 @@ names(americas.data)
 library(tidyr)
 americas.data <- gather(americas.data, key = "metric", value = "proportion", 2:4)
 
-ggplot(americas.data, aes(subregion, proportion, fill = metric))+ 
-  geom_bar(stat = "identity", position = "dodge")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+americas.data$subregion <- as.factor(as.character(americas.data$subregion))
+americas.data$subregion <-  factor(americas.data$subregion,levels(americas.data$subregion)[c(4,1,2,3,5)])
+americas.data$metric <- as.factor(as.character(americas.data$metric))
+americas.data$metric <- factor(americas.data$metric, levels(americas.data$metric)[c(2,1,3)])
+
+americas.data$percent <- americas.data$proportion*100
+
+ggplot(americas.data, aes(subregion, percent, fill = metric))+ 
+  geom_col( position = "dodge")+
+  ylab("PROPORTION (%) OF PROTECTED \n AREA COVERAGE")+
+  xlab("AMERICAS REGION AND SUBREGIONS")+
+  scale_fill_manual(name = NULL , values = c("darkolivegreen3", "plum4", "palegreen4"),
+                      labels = c( "Terrestrial", "Marine (EEZ)*", "Total"))+
+  scale_y_continuous( breaks = seq(0,35, by = 5),
+                      labels = seq(0,35, by = 5),
+                      limits = c(0,30))+
+  theme(legend.position="bottom",
+        legend.justification = "left",
+        legend.background = element_rect('snow2'),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = 'snow2'),
+        plot.background = element_rect(fill = "snow2"),
+        axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 2, l = 0)),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank()
+        )
 
 
 
