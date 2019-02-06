@@ -273,8 +273,16 @@ ipbes.gdp.proc<-merge(ipbes.data,ipbes.gdp.ag, by.x="subregion", by.y="ipbes.sub
 head(ipbes.gdp.proc)
 
 # plotting using ggplot ---------------------------------------------------
+<<<<<<< HEAD
 ##plotting##
 library(ggplot2)
+=======
+<<<<<<< HEAD
+##plotting##
+=======
+library(ggplot2)
+>>>>>>> d61f6371d5544f794e9628ec54dc16db820aa43c
+>>>>>>> 9acf7c93030108b028a0dc140b1d1f46cf9b18ad
 
 #baseplot
 #there is built-in plotting capability in R
