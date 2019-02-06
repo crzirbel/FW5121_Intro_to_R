@@ -12,7 +12,6 @@
 #' 0. R setup & tutorial
 #' 1. Pull in data
 #'    a. setwd()
-#'    b. R projects?
 #'    c. read.csv(), read.table(), others?
 #' 2. Re-organize, re-shape
 #' 3. Cleaning/ data view
@@ -170,7 +169,6 @@ setwd() #add the file path to the folder where the files you want are stored.
 #R projects are also a powerful tool for managing your code and files (especially when you are working on multiple projects)
 #We wont cover them here but check out this post for more info: https://r4ds.had.co.nz/workflow-projects.html
 
-
 # loading data into R -----------------------------------------------------
 
 ## HW data EXERCISE ##
@@ -218,7 +216,7 @@ names(er.data) <- tolower(names(er.data))
 names(er.data)[2] <- "land.value.usdperha"
 names(er.data)[5:6] <- c("tot.area.milha","existing.prot.area.ha")
 
-# We want the units of tot area on same scale as existing prot area. We can calculate a new column of values using the previous set of columns
+# (Compare to excel) We want the units of tot area on same scale as existing prot area. We can calculate a new column of values using the previous set of columns
 er.data$tot.area.ha <- er.data$tot.area.milha * 1000000
 
 
@@ -226,7 +224,7 @@ er.data$tot.area.ha <- er.data$tot.area.milha * 1000000
 # Proportion of each ecoregion that is protected:
 er.data$proportion.prot <- er.data$existing.prot.area.ha/er.data$tot.area.ha
 
-# sort the regions by proportion protected
+# (Compare to excel) sort the regions by proportion protected
 order(er.data[,"proportion.prot"], decreasing = F) # what are the row #s for proportion.prot in increasing order
 er.data[order(er.data[,"proportion.prot"], decreasing = F), c("ecoregon","proportion.prot")] # print the ecoregion and proportion protected in the order we just described
 
@@ -255,12 +253,6 @@ head(ipbes.data)
 summary(ipbes.data)
 
 str(ipbes.data)
-
-#calculations on ipbes.data (excel comparison)
-
-#manipulate ipbes.data (subsetting) plotting raw data
-
-#calculations on data
 
 ##merging datasets (other data?)
 #GDP by country
@@ -332,9 +324,18 @@ sum(rapply(st_geometry(ipbes.sp), nrow))
 #The unsimplified version of this file took >30 minutes to plot on my laptop.
 #The developers working on ggplot know about the plotting time issues and it is an active area of development.
 
+#To differenciate our regions and the type of protected area lets combine two character columns using paste()
+ipbes.sp$IPBES_regi_type<-as.factor(paste(ipbes.sp$IPBES_regi,ipbes.sp$type, sep= "_"))
+colors<-c("lightblue", "orange", "green")
+
 ggplot(ipbes.sp)+
-  geom_sf(aes(fill = IPBES_regi)) +
-  geom_sf_label(aes(label = IPBES_sub)) #need to update colors and labeling, create
+  geom_sf(aes(fill = IPBES_regi, values= colors)) +
+  geom_sf_label(aes(label = IPBES_sub)) + #need to update colors and labeling, create
+  theme(text = element_text(size=20),
+        panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line = element_line(size=.7, color="black"),
+        legend.position = "none",axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank())
 
 plot(st_geometry(ipbes.sp))
 
@@ -346,8 +347,15 @@ plot(st_geometry(ipbes.sp))
 
 # Other resources for learning R -------------------------------------------
 
-#The swirl package
+#The swirl package: an interface within R for learning R
+install.packages("swirl")
+library(swirl)
+swirl()
 
+#Data carpentry (https://datacarpentry.org/R-ecology-lesson/01-intro-to-r.html)
 
+#Stack exchange: You can often find answers to your questions with a quick
+#google search which will often lead you to stack exchange (disclaimer: People there can be jerks)
 
-
+#Twitter Use the hashtag #rstats someone can usually answer your question quickly
+#or point you in the right direction
