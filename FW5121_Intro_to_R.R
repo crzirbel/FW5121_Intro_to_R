@@ -280,7 +280,6 @@ names(ipbes.country.region)
 
 
 # plotting using ggplot ---------------------------------------------------
-##plotting
 library(ggplot2)
 
 ggplot(ipbes.data, aes(subregion, total_area_km2))+ 
@@ -294,6 +293,9 @@ prot_plot <- ggplot(subset(ipbes.data, region== "Americas"),
   geom_bar(stat = "identity")+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+#facets
+
+
 americas.data <- subset(ipbes.data, region== "Americas")[,c(2,5,8,11)]
 names(americas.data)
 
@@ -303,8 +305,6 @@ americas.data <- gather(americas.data, key = "metric", value = "proportion", 2:4
 ggplot(americas.data, aes(subregion, proportion, fill = metric))+ 
   geom_bar(stat = "identity", position = "dodge")+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-
 
 #mapping
 library(sf)
@@ -326,18 +326,34 @@ sum(rapply(st_geometry(ipbes.sp), nrow))
 
 #To differenciate our regions and the type of protected area lets combine two character columns using paste()
 ipbes.sp$IPBES_regi_type<-as.factor(paste(ipbes.sp$IPBES_regi,ipbes.sp$type, sep= "_"))
-colors<-c("lightblue", "orange", "green")
 
+#Just some code to make the plot look better
+#This matches the colors with the Brooks et al. figure
+colors<-c("#BEDAFF", "#FFE5B2", "#FFD380", "#B9E1A5", "#89CD66", "#DAC4E8", 
+          "#C19ED6", "#DDA4AD", "#CE6667", "#E5E1E0", "#CCCCCC")
+
+#Here I create a coordinate df to plot the region names
+ipbes.coords<-as.data.frame(sf::st_coordinates(st_point_on_surface(ipbes.sp)))
+ipbes.coords$IPBES_sub<-ipbes.sp$IPBES_sub
+ipbes.coords$type<-ipbes.sp$type
+#This only keeps the labels for the "Land" so the map doesn't get crowded
+ipbes.coords<-ipbes.coords[ipbes.coords$type%in%"Land",]
+#Here I create a line break in two of the longer names using \n
+ipbes.coords$IPBES_sub <- plyr::revalue(ipbes.coords$IPBES_sub, c("East Africa and adjacent islands"= "East Africa and\nadjacent islands",
+                                                                  "Central and Western Europe"= "Central and Western\nEurope"))
+#Lets plot the map now
 ggplot(ipbes.sp)+
-  geom_sf(aes(fill = IPBES_regi, values= colors)) +
-  geom_sf_label(aes(label = IPBES_sub)) + #need to update colors and labeling, create
+  geom_sf(aes(fill = IPBES_regi_type)) +
+  scale_fill_manual(values= colors) +
+  geom_text(data = ipbes.coords, aes(X, Y, label = IPBES_sub), size= 1.75,
+            colour = "black", fontface= "bold") +
   theme(text = element_text(size=20),
         panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line = element_line(size=.7, color="black"),
         legend.position = "none",axis.title=element_blank(),
         axis.text=element_blank(),
         axis.ticks=element_blank())
-
-plot(st_geometry(ipbes.sp))
+#There are a few issues with the positioning of the labels but this looks pretty
+#similar to the Brooks et al. Figure
 
 #map_data package
 
