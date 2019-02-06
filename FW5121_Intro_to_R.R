@@ -274,16 +274,7 @@ ipbes.gdp.proc<-merge(ipbes.data,ipbes.gdp.ag, by.x="subregion", by.y="ipbes.sub
 head(ipbes.gdp.proc)
 
 # plotting using ggplot ---------------------------------------------------
-<<<<<<< HEAD
-##plotting##
 library(ggplot2)
-=======
-<<<<<<< HEAD
-##plotting##
-=======
-library(ggplot2)
->>>>>>> d61f6371d5544f794e9628ec54dc16db820aa43c
->>>>>>> 9acf7c93030108b028a0dc140b1d1f46cf9b18ad
 
 #baseplot
 #there is built-in plotting capability in R
@@ -302,7 +293,6 @@ ggplot(ipbes.data, aes(region, total_area_km2))+ # build a plotting space
 
 # Lets re-create a figure from Brooks et al. 2016:
 subset(ipbes.data, region== "Americas")
-
 
 # can only plot one variable?
 am.prot.prop <- ggplot(subset(ipbes.data, region== "Americas"), 
@@ -427,11 +417,9 @@ world$region <- plyr::revalue(world$region, c("Bolivia"= "Bolivia (Plurinational
                                               "Venezuela"= "Venezuela (Bolivarian Republic of)",
                                               "Vietnam"= "Viet Nam"))
 
-
 #merge data frames
 ipbes.region.proc<-merge(ipbes.country.region, ipbes.data, by.x = "ipbes.sub.region", by.y= "subregion")
 map.ipbes<-merge(world, ipbes.region.proc, by.x="region", by.y= "country.ipbes", all.x=T)
-
 
 #merging reorder our data.frame we need to put it back so that ggplot can plot correctly
 map.ipbes<-map.ipbes[order(map.ipbes$order),]
