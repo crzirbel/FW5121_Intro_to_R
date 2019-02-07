@@ -238,6 +238,7 @@ er.dt[ ,.(ecoregon, proportion.prot)]
 
 # Working with datasets -------------------------------------------------
 #load data
+#add citation
 ipbes.data<-read.csv("https://datadryad.org/bitstream/handle/10255/dryad.107691/PAs_IPBES.csv?sequence=5")
 
 #Veiw(), summary(), str()
@@ -294,7 +295,6 @@ ggplot(ipbes.data, aes(region, total_area_km2))+ # build a plotting space
 # Lets re-create a figure from Brooks et al. 2016:
 subset(ipbes.data, region== "Americas")
 
-
 # can only plot one variable?
 am.prot.prop <- ggplot(subset(ipbes.data, region== "Americas"), 
   aes(subregion, total_proportion_in_protected_areas))+ 
@@ -342,7 +342,9 @@ ggplot(americas.data, aes(subregion, percent, fill = metric))+
 #facets
 
 
-#mapping
+# mapping ----------------------------------------------------------------------
+#add text about analyzing/ploting shapefiles in R
+
 library(sf)
 ipbes.sp<-st_read("shapefile/EEZv8_WVS_DIS_V3_ALL_final_v7disIPBES.shp") #file currently only stored locally
 
@@ -391,7 +393,7 @@ ggplot(ipbes.sp)+
 #There are a few issues with the positioning of the labels but this looks pretty
 #similar to the Brooks et al. Figure
 
-#map_data package
+##map_data package
 library(mapdata)
 library(ggmap)
 
@@ -399,12 +401,26 @@ library(ggmap)
 world<-map_data("world")
 
 #rename countries in world to match ipbes.region.proc
-
+##THIS IS INCOMPLETE##
+world$region <- plyr::revalue(world$region, c("Bolivia"= "Bolivia (Plurinational State of)",
+                                              "Ivory Coast"= "Central and Western\nEurope",
+                                              "Republic of Congo"= "Congo",
+                                              "Ivory Coast"= "Cote d'Ivoire",
+                                              "UK"= "United Kingdom of Great Britain and Northern Ireland",
+                                              "Greenland"= "Greenland",
+                                              "Iran"= "Iran (Islamic Republic of)",
+                                              "Laos"= "Lao People’s Democratic Republic",
+                                              "South Korea"="Republic of Korea",
+                                              "North Korea"= "Democratic People’s Republic of Korea",
+                                              "Russia"= "Russian Federation",
+                                              "Syria"= "Syrian Arab Republic",
+                                              "USA"= "United States of America",
+                                              "Venezuela"= "Venezuela (Bolivarian Republic of)",
+                                              "Vietnam"= "Viet Nam"))
 
 #merge data frames
 ipbes.region.proc<-merge(ipbes.country.region, ipbes.data, by.x = "ipbes.sub.region", by.y= "subregion")
 map.ipbes<-merge(world, ipbes.region.proc, by.x="region", by.y= "country.ipbes", all.x=T)
-
 
 #merging reorder our data.frame we need to put it back so that ggplot can plot correctly
 map.ipbes<-map.ipbes[order(map.ipbes$order),]
@@ -422,7 +438,7 @@ ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) +
   scale_fill_gradient(low = "blue", high = "red", space = "Lab", na.value = "white") +
   theme_nothing()
 
-#cut em loose
+#cut em loose ## (explain this more) ##
 #own figure
 
 # Other resources for learning R -------------------------------------------
