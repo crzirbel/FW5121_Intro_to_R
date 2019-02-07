@@ -58,6 +58,7 @@ meow<-multicat(xs=-10:10, ys=rnorm(21),
                catcolor=list('black'),
                canvas=c(-0.1,1.1, -0.1, 1.1),
                xlab="some cats", ylab="other cats", main="Random Cats")
+
 #or we can do this
 devtools::install_github("melissanjohnson/pupR")
 library(pupR)
@@ -127,6 +128,7 @@ install.packages("janitor")
 #The load the package into your R session using library()
 
 library(janitor) #remember: F1 within "janitor" will pull up helpfile
+#we will use the clean_namess() function from this package later
 
 ##Loops##
 #We can use loops to complete repetitive calculations and tasks:
@@ -237,11 +239,14 @@ er.dt[ ,.(ecoregon, proportion.prot)]
 
 
 # Working with datasets -------------------------------------------------
-#load data
-#add citation
+#load IPBES protected area data from:
+#Brooks, T. M., Akçakaya, H. R., Burgess, N. D., Butchart, S. H., Hilton-Taylor, C., Hoffmann, M., ... & Perianin, L.
+#(2016). Analysing biodiversity and conservation knowledge products to support regional environmental assessments.
+#Scientific data, 3, 160007.
+
 ipbes.data<-read.csv("https://datadryad.org/bitstream/handle/10255/dryad.107691/PAs_IPBES.csv?sequence=5")
 
-#Veiw(), summary(), str()
+#Lets look at the data what do we see?
 View(ipbes.data)
 
 #reloading data with na.strings and clean_names to fix problems in the df
@@ -255,22 +260,27 @@ summary(ipbes.data)
 
 str(ipbes.data)
 
-##merging datasets (other data?)
-#GDP by country
-gdp<-read.csv("GDP.csv")
+# merging datasets ------------------------------------------------------------
+#dataset of GDP by country
+gdp<-read.csv("https://github.com/crzirbel/FW5121_Intro_to_R/raw/master/GDP.csv")
 
 #load in a table from Brooks et al. 2016 that has country info for the regions used in the IPBES report
 ipbes.country.region<-read.csv("https://github.com/crzirbel/FW5121_Intro_to_R/raw/master/ipbes_country_region_lookup.csv")
 
-#merge data frames
+#merge datasets together
+#We use by or by.x and by.y to tell merge() which column(s) we want it to match the two datasets by
+#all, all.x, and all.y are used to tell merge which rows should be kept in the merged datset
 ipbes.region.gdp<-merge(ipbes.country.region, gdp, by.x = "country.ipbes", by.y = "country", all.x=T)
 
 #now we can aggregate the data so that it matches the IPBES protected area data
+#Here we aggregate by region and sub region, and sum across duplicate rows within those groups
+#Instead of taking the sum we could also take the mean or max or even use a custom function
 ipbes.gdp.ag<-aggregate(gdp~ipbes.region+ipbes.sub.region, data=ipbes.region.gdp, sum)
 
 #merge gdp and protected area data frames
 ipbes.gdp.proc<-merge(ipbes.data,ipbes.gdp.ag, by.x="subregion", by.y="ipbes.sub.region")
 
+#look at the new dataset we have now
 head(ipbes.gdp.proc)
 
 # plotting using ggplot ---------------------------------------------------
@@ -300,6 +310,9 @@ am.prot.prop <- ggplot(subset(ipbes.data, region== "Americas"),
   aes(subregion, total_proportion_in_protected_areas))+ 
   geom_col(alpha = .5)+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+am.prot.prop #I added this so they can look at the iterative steps. Delete if you want
+
+#split by EEZ and Land
 am.prot.prop+
   geom_col(aes(y = subset(ipbes.data, region== "Americas")$proportion_of_exclusive_economic_zone_in_protected_areas), alpha = .5)
 
@@ -307,6 +320,7 @@ am.prot.prop+
 americas.data <- subset(ipbes.data, region== "Americas")[,c(2,5,8,11)]
 names(americas.data)
 
+#
 library(tidyr)
 americas.data <- gather(americas.data, key = "metric", value = "proportion", 2:4)
 
@@ -343,9 +357,15 @@ ggplot(americas.data, aes(subregion, percent, fill = metric))+
 
 
 # mapping ----------------------------------------------------------------------
-#add text about analyzing/ploting shapefiles in R
+#manipulating, analyzing, and plotting shapefiles is an area of R that is currently underdevelopment.
+#you will see alot of different packages to manipulate shapefiles including sp, rgdal, and sf
+#Today we will use sf which is relatively new
 
 library(sf)
+#load the shapefile for the IPBES map
+#you can look in the github repository at the folder called shapefile for all of the files asociated with the shapefile
+#you only need to load the .shp file
+#the st_read() is just like read.csv() but it reads .shp files
 ipbes.sp<-st_read("shapefile/EEZv8_WVS_DIS_V3_ALL_final_v7disIPBES.shp") #file currently only stored locally
 
 #I used mapshaper.org to simplify the shapefile. I recommend doing this when working with large shapefiles
@@ -364,16 +384,19 @@ sum(rapply(st_geometry(ipbes.sp), nrow))
 
 #To differenciate our regions and the type of protected area lets combine two character columns using paste()
 ipbes.sp$IPBES_regi_type<-as.factor(paste(ipbes.sp$IPBES_regi,ipbes.sp$type, sep= "_"))
+#now we have a new column "IPBES_regi_type" 
 
 #Just some code to make the plot look better
-#This matches the colors with the Brooks et al. figure
+#This matches the colors with the Brooks et al. figure. These are the hexcodes and the order matches the order of:
+levels(ipbes.sp$IPBES_regi_type)
+
 colors<-c("#BEDAFF", "#FFE5B2", "#FFD380", "#B9E1A5", "#89CD66", "#DAC4E8", 
           "#C19ED6", "#DDA4AD", "#CE6667", "#E5E1E0", "#CCCCCC")
 
-#Here I create a coordinate df to plot the region names
+#Here I create a coordinates df to plot the region names
 ipbes.coords<-as.data.frame(sf::st_coordinates(st_point_on_surface(ipbes.sp)))
-ipbes.coords$IPBES_sub<-ipbes.sp$IPBES_sub
-ipbes.coords$type<-ipbes.sp$type
+ipbes.coords$IPBES_sub<-ipbes.sp$IPBES_sub #add the subregion column to the coord df
+ipbes.coords$type<-ipbes.sp$type #add the type column to the coord df
 #This only keeps the labels for the "Land" so the map doesn't get crowded
 ipbes.coords<-ipbes.coords[ipbes.coords$type%in%"Land",]
 #Here I create a line break in two of the longer names using \n
@@ -393,9 +416,12 @@ ggplot(ipbes.sp)+
 #There are a few issues with the positioning of the labels but this looks pretty
 #similar to the Brooks et al. Figure
 
-##map_data package
+##map_data and ggmap package
+install.packages(c("mapdata", "ggmap"))
 library(mapdata)
 library(ggmap)
+#The mapdata package contains data frames that are made for plotting in ggplot
+#The ggmap package adds some mapping functionality to ggplot
 
 #load a simple data frame that plots countries from the mapdata package
 world<-map_data("world")
@@ -403,7 +429,6 @@ world<-map_data("world")
 #rename countries in world to match ipbes.region.proc
 ##THIS IS INCOMPLETE##
 world$region <- plyr::revalue(world$region, c("Bolivia"= "Bolivia (Plurinational State of)",
-                                              "Ivory Coast"= "Central and Western\nEurope",
                                               "Republic of Congo"= "Congo",
                                               "Ivory Coast"= "Cote d'Ivoire",
                                               "UK"= "United Kingdom of Great Britain and Northern Ireland",
@@ -414,11 +439,12 @@ world$region <- plyr::revalue(world$region, c("Bolivia"= "Bolivia (Plurinational
                                               "North Korea"= "Democratic People’s Republic of Korea",
                                               "Russia"= "Russian Federation",
                                               "Syria"= "Syrian Arab Republic",
+                                              "Tanzania"= "United Republic of Tanzania",
                                               "USA"= "United States of America",
                                               "Venezuela"= "Venezuela (Bolivarian Republic of)",
                                               "Vietnam"= "Viet Nam"))
 
-#merge data frames
+#merge the protected area, country-region table, and world map data frames
 ipbes.region.proc<-merge(ipbes.country.region, ipbes.data, by.x = "ipbes.sub.region", by.y= "subregion")
 map.ipbes<-merge(world, ipbes.region.proc, by.x="region", by.y= "country.ipbes", all.x=T)
 
@@ -435,8 +461,12 @@ ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) +
 ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) + 
   geom_polygon(data=map.ipbes, color = "black", aes(fill = total_proportion_in_protected_areas)) +
-  scale_fill_gradient(low = "blue", high = "red", space = "Lab", na.value = "white") +
-  theme_nothing()
+  scale_fill_gradient(low = "blue", high = "red", space = "Lab", na.value = "white", guide= "colourbar") +
+  theme(text = element_text(size=16),axis.text=element_text(colour="black"),
+        panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line = element_line(size=.7, color="black"),
+        legend.key = element_rect(fill = "white"))
+
+#plot by GDP
 
 #cut em loose ## (explain this more) ##
 #own figure
