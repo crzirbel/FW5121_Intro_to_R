@@ -447,6 +447,7 @@ world$region <- plyr::revalue(world$region, c("Bolivia"= "Bolivia (Plurinational
 #merge the protected area, country-region table, and world map data frames
 ipbes.region.proc<-merge(ipbes.country.region, ipbes.data, by.x = "ipbes.sub.region", by.y= "subregion")
 map.ipbes<-merge(world, ipbes.region.proc, by.x="region", by.y= "country.ipbes", all.x=T)
+map.ipbes<-merge(map.ipbes, gdp, by.x= "region", by.y= "country", all.x=T)
 
 #merging reorder our data.frame we need to put it back so that ggplot can plot correctly
 map.ipbes<-map.ipbes[order(map.ipbes$order),]
@@ -460,13 +461,29 @@ ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) +
 #lets add some data on protecte areas (by subregion)
 ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) + 
+  ggtitle("Proportion of protected area by region") +
   geom_polygon(data=map.ipbes, color = "black", aes(fill = total_proportion_in_protected_areas)) +
   scale_fill_gradient(low = "blue", high = "red", space = "Lab", na.value = "white", guide= "colourbar") +
-  theme(text = element_text(size=16),axis.text=element_text(colour="black"),
-        panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line = element_line(size=.7, color="black"),
+  theme(text = element_text(size=16),axis.line=element_blank(),axis.text.x=element_blank(),
+        axis.text.y=element_blank(),axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(), legend.title = element_blank(),
+        panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
         legend.key = element_rect(fill = "white"))
 
-#plot by GDP
+#Its easy to change this what we plot by
+#Now lets use GDP
+ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  ggtitle("GDP by country") +
+  geom_polygon(data=map.ipbes, color = "black", aes(fill = gdp)) +
+  scale_fill_gradient(low = "blue", high = "red", space = "Lab", na.value = "white", guide= "colourbar") +
+  theme(text = element_text(size=16),axis.line=element_blank(),axis.text.x=element_blank(),
+        axis.text.y=element_blank(),axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(), legend.title = element_blank(),
+        panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
+        legend.key = element_rect(fill = "white"))
 
 #cut em loose ## (explain this more) ##
 #own figure
