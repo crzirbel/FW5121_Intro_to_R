@@ -273,16 +273,8 @@ ipbes.gdp.proc<-merge(ipbes.data,ipbes.gdp.ag, by.x="subregion", by.y="ipbes.sub
 head(ipbes.gdp.proc)
 
 # plotting using ggplot ---------------------------------------------------
-<<<<<<< HEAD
 ##plotting##
 library(ggplot2)
-=======
-<<<<<<< HEAD
-##plotting##
-=======
-library(ggplot2)
->>>>>>> d61f6371d5544f794e9628ec54dc16db820aa43c
->>>>>>> 9acf7c93030108b028a0dc140b1d1f46cf9b18ad
 
 #baseplot
 #there is built-in plotting capability in R
@@ -329,7 +321,7 @@ ggplot(americas.data, aes(subregion, percent, fill = metric))+
   geom_col( position = "dodge")+
   ylab("PROPORTION (%) OF PROTECTED \n AREA COVERAGE")+
   xlab("AMERICAS REGION AND SUBREGIONS")+
-  scale_fill_manual(name = NULL , values = c("darkolivegreen3", "plum4", "palegreen4"),
+  scale_fill_manual(name = NULL , values = c("#AACE83", "#9883A8", "#4F5F53"),
                       labels = c( "Terrestrial", "Marine (EEZ)*", "Total"))+
   scale_y_continuous( breaks = seq(0,35, by = 5),
                       labels = seq(0,35, by = 5),
