@@ -432,12 +432,12 @@ ipbes.coords<-ipbes.coords[ipbes.coords$type%in%"Land",]
 ipbes.coords$IPBES_sub <- plyr::revalue(ipbes.coords$IPBES_sub, c("East Africa and adjacent islands"= "East Africa and\nadjacent islands",
                                                                   "Central and Western Europe"= "Central and Western\nEurope"))
 #Lets plot the map now
-ggplot(ipbes.sp)+
-  geom_sf(aes(fill = IPBES_regi_type)) +
-  scale_fill_manual(values= colors) +
-  geom_text(data = ipbes.coords, aes(X, Y, label = IPBES_sub), size= 1.75,
+ggplot(ipbes.sp)+ #tell ggplot which shapefile to plot
+  geom_sf(aes(fill = IPBES_regi_type)) + #This is the main geom within ggplot that can turn the "geometry" into a map
+  scale_fill_manual(values= colors) +    #Tell ggplot which colors to use
+  geom_text(data = ipbes.coords, aes(X, Y, label = IPBES_sub), size= 1.75, #add the sub-region labels
             colour = "black", fontface= "bold") +
-  theme(text = element_text(size=20),
+  theme(text = element_text(size=20), #This theme function allows you to customize the look of the plot. There are built in themes or you can create custom themes
         panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line = element_line(size=.7, color="black"),
         legend.position = "none",axis.title=element_blank(),
         axis.text=element_blank(),
