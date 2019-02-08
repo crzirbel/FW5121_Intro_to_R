@@ -144,12 +144,14 @@ for (i in 1:length(b)){ #for instances 1 through however long b is
 # https://statistics.laerd.com/statistical-guides/measures-of-spread-standard-deviation.php
 # Then use your function to caclulate sd from a known sample: 
 
+# missing code is given by **
+
 sd <- function(x){
-  a <- c() # make an empty variable "a" to store intermediate calculations
-  for (i in 1:length(x)){ # for numbers 1-length of our sample, 
-    a[i] <- (x[i] - mean(x))^2 # for each position (1 through length(sample)) in "a", calculate for that same position in "x", the dif of each value from mean of "x", and square that value; 
+  a <- **  # make an empty variable "a" to store intermediate calculations
+  for (**){ # for numbers 1-length of our sample, 
+    a** <- (x[i] - **)^2 # for each position in "a", calculate for that same position in "x", the difference of the value of x from mean of "x", and square that value; 
   }
-  return(sqrt((sum(a)/(length(x)-1)))) # calculate & return the square root of the sum of all the values in "a" divided by the size of our sample minus 1.
+  return(**) # calculate & return the square root of the sum of all the values in "a" divided by the size of our sample minus 1.
 }
 ##End Exercise##
 
@@ -182,16 +184,16 @@ setwd() #add the file path to the folder where the files you want are stored.
 # 2. Save it to your working directory location (use getwd() and setwd() to troubleshoot)
 
 # 3a. Read the data into R by assiging it to a variable, like:  er.data <- read.csv("filename.csv")
-er.data <- read.csv("Ecoregion_Data_Set.csv")
+**
 
 # 3b. Read the data directly into R from a web URL. First visit the URL and view to see what R will be using as data: https://github.com/crzirbel/FW5121_Intro_to_R. Click on the Ecoregion_Data_Set.csv and view as Raw. Copy link and assign it to a variable using read.csv() Ex: read.csv("https...Ecoregion_Data_Set.csv") 
-er.data <- read.csv("https://raw.githubusercontent.com/crzirbel/FW5121_Intro_to_R/master/Ecoregion_Data_Set.csv")
+er.data <- **
 
 # 4. Inspect what you loaded using View()
-View(er.data)
+**
 
 # 5. Compare to the Excel spreadsheet from Moodle. Why are there blank rows & columns?
-View(er.data)
+
 ##END Exercise##
 
 # cleaning and manipulating data ------------------------------------------
@@ -211,9 +213,9 @@ er.data <- er.data[-c(1:3),] # reassign er.data
 # Ex 2: dropping a column -------------------------------------------------
 
 ##Exercise: Drop last column##
-er.data[,"X"]
 names(er.data)
-er.data <- er.data[,-7]
+er.data[,**] # view the last column
+** # drop the last column
 ##END Exercise##
 
 #clean column names
@@ -230,11 +232,11 @@ er.data$tot.area.ha <- er.data$tot.area.milha * 1000000
 
 ##Exercise: Calculation##
 # Proportion of each ecoregion that is protected:
-er.data$proportion.prot <- er.data$existing.prot.area.ha/er.data$tot.area.ha
+er.data$proportion.prot <- **
 
-# (Compare to excel) sort the regions by proportion protected
+# (Compare to excel) sort the regions by proportion protected:
 order(er.data[,"proportion.prot"], decreasing = F) # what are the row #s for proportion.prot in increasing order
-er.data[order(er.data[,"proportion.prot"], decreasing = F), c("ecoregon","proportion.prot")] # print the ecoregion and proportion protected columns in the order we just described
+er.data[**, **] # print the ecoregion and proportion protected columns in the order we just described
 
 ## End EXERCISE ##
 
@@ -515,6 +517,7 @@ ggplot(data = map.ipbes, mapping = aes(x = long, y = lat, group = group)) +
         axis.title.y=element_blank(), legend.title = element_blank(),
         panel.background=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
         legend.key = element_rect(fill = "white"))
+
 
 # Other resources for learning R -------------------------------------------
 
