@@ -111,7 +111,7 @@ mean() #F1 while cursor is in the function is a shortcut for this in R studio
 #We can also create our own functions. Here is a function that calculates the mean.
 #redundant I know but hopefully you can see the utility
 
-my_mean_func<-function(x){ # my_mean_function[names the function] <- function(x[names arguments you'll use in maikng fn]){[starts function]
+my_mean_func<-function(x){ # my_mean_function[names the function] <- function(x[names arguments you'll use in making fn]){[starts function]
   x_mean<-sum(x)/length(x) # tells fn to do this calculation
   return(x_mean) # finally, print the calculated value
 }
@@ -128,7 +128,7 @@ install.packages("janitor")
 #The load the package into your R session using library()
 
 library(janitor) #remember: F1 within "janitor" will pull up helpfile
-#we will use the clean_namess() function from this package later
+#we will use the clean_names() function from this package later
 
 ##Loops##
 #We can use loops to complete repetitive calculations and tasks:
@@ -174,14 +174,14 @@ setwd() #add the file path to the folder where the files you want are stored.
 #R projects are also a powerful tool for managing your code and files (especially when you are working on multiple projects)
 #We wont cover them here but check out this post for more info: https://r4ds.had.co.nz/workflow-projects.html
 
-# loading data into R -----------------------------------------------------
+#Ex1: loading data into R -----------------------------------------------------
 
 ##Exercise: HW Data##
 # 1. Download the data for today's problem set from Canvas. 
 
 # 2. Save it to your working directory location (use getwd() and setwd() to troubleshoot)
 
-# 3a. Read the data into R by assiging it to a variable, like:  mydata <- read.csv("filename.csv")
+# 3a. Read the data into R by assiging it to a variable, like:  er.data <- read.csv("filename.csv")
 er.data <- read.csv("Ecoregion_Data_Set.csv")
 
 # 3b. Read the data directly into R from a web URL. First visit the URL and view to see what R will be using as data: https://github.com/crzirbel/FW5121_Intro_to_R. Click on the Ecoregion_Data_Set.csv and view as Raw. Copy link and assign it to a variable using read.csv() Ex: read.csv("https...Ecoregion_Data_Set.csv") 
@@ -200,12 +200,15 @@ View(er.data)
 #There are lots of ways that imported data can be "messy." R and packages within offer many tools to clean up datasets!
 
 # can select rows or columns from a data.frame (or matrix, list, etc.) using brackets
-er.data[1] # view column 1
+er.data[,1] # view column 1
 er.data[12,1] # row 12, column 1
 er.data[12,"Ecoregon"] # can call columns by names
 er.data[1:3,] # rows 1-3, all columns implied by leaving blank after column
 er.data[-c(1:3),] # all rows except rows 1-3, all cols (just prints it, doesn't remove it from dataset)
 er.data <- er.data[-c(1:3),] # reassign er.data
+
+
+# Ex 2: dropping a column -------------------------------------------------
 
 ##Exercise: Drop last column##
 er.data[,"X"]
@@ -222,13 +225,17 @@ names(er.data)[5:6] <- c("tot.area.milha","existing.prot.area.ha")
 # (Compare to excel) We want the units of tot area on same scale as existing prot area. We can calculate a new column of values using the previous set of columns
 er.data$tot.area.ha <- er.data$tot.area.milha * 1000000
 
+
+# Ex3: calculate in a dataframe -------------------------------------------
+
 ##Exercise: Calculation##
 # Proportion of each ecoregion that is protected:
 er.data$proportion.prot <- er.data$existing.prot.area.ha/er.data$tot.area.ha
 
 # (Compare to excel) sort the regions by proportion protected
 order(er.data[,"proportion.prot"], decreasing = F) # what are the row #s for proportion.prot in increasing order
-er.data[order(er.data[,"proportion.prot"], decreasing = F), c("ecoregon","proportion.prot")] # print the ecoregion and proportion protected in the order we just described
+er.data[order(er.data[,"proportion.prot"], decreasing = F), c("ecoregon","proportion.prot")] # print the ecoregion and proportion protected columns in the order we just described
+
 ## End EXERCISE ##
 
 # there may be better solutions for many tasks in other packages. Example:
@@ -302,7 +309,7 @@ ggplot(ipbes.data, aes(region, total_area_km2))+ # build a plotting space
   geom_point()+ # map some data into that space
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # adjust things
 
-# Lets re-create a figure from Brooks et al. 2016:
+# Lets re-create a figure from IPBES report:
 subset(ipbes.data, region== "Americas")
 
 # can only plot one variable?
@@ -310,13 +317,13 @@ am.prot.prop <- ggplot(subset(ipbes.data, region== "Americas"),
   aes(subregion, total_proportion_in_protected_areas))+ 
   geom_col(alpha = .5)+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-am.prot.prop #I added this so they can look at the iterative steps. Delete if you want
+am.prot.prop
 
 #split by EEZ and Land
 am.prot.prop+
   geom_col(aes(y = subset(ipbes.data, region== "Americas")$proportion_of_exclusive_economic_zone_in_protected_areas), alpha = .5)
 
-# we need to re-arrange for easier plotting:
+# we can re-arrange for easier plotting:
 americas.data <- subset(ipbes.data, region== "Americas")[,c(2,5,8,11)]
 names(americas.data)
 
@@ -324,14 +331,10 @@ names(americas.data)
 library(tidyr)
 americas.data <- gather(americas.data, key = "metric", value = "proportion", 2:4)
 
-americas.data$subregion <- as.factor(as.character(americas.data$subregion))
-americas.data$subregion <-  factor(americas.data$subregion,levels(americas.data$subregion)[c(4,1,2,3,5)])
-americas.data$metric <- as.factor(as.character(americas.data$metric))
-americas.data$metric <- factor(americas.data$metric, levels(americas.data$metric)[c(2,1,3)])
 
 americas.data$percent <- americas.data$proportion*100
 
-ggplot(americas.data, aes(subregion, percent, fill = metric))+ 
+ipbes.plot <- ggplot(americas.data, aes(subregion, percent, fill = metric))+ 
   geom_col( position = "dodge")+
   ylab("PROPORTION (%) OF PROTECTED \n AREA COVERAGE")+
   xlab("AMERICAS REGION AND SUBREGIONS")+
@@ -351,9 +354,37 @@ ggplot(americas.data, aes(subregion, percent, fill = metric))+
         panel.grid.major.x = element_blank(),
         panel.grid.minor = element_blank()
         )
+ipbes.plot
+
+
+americas.data$subregion <- as.factor(as.character(americas.data$subregion)) #reset factor levels to drop full dataset levels
+americas.data$subregion <-  factor(americas.data$subregion,levels(americas.data$subregion)[c(4,1,2,3,5)]) # make order match what we want
+americas.data$metric <- as.factor(as.character(americas.data$metric))
+americas.data$metric <- factor(americas.data$metric, levels(americas.data$metric)[c(2,1,3)])
+ipbes.plot
 
 
 #facets
+ipbes.data.facet <- ipbes.data[,c(1,2,5,8,11)]
+ipbes.data.facet <- gather(ipbes.data.facet, key = "metric", value = "proportion", 3:5)
+ipbes.data.facet$percent <- ipbes.data.facet$proportion*100
+
+ipbes.plot.global <- ggplot(ipbes.data.facet, aes(subregion, percent, fill = metric))+ 
+  geom_col( position = "dodge")+
+  ylab("PROPORTION (%) OF PROTECTED \n AREA COVERAGE")+
+  scale_fill_manual(name = NULL , values = c("#AACE83", "#9883A8", "#4F5F53"),
+                    labels = c( "Terrestrial", "Marine (EEZ)*", "Total"))+
+  scale_y_continuous( breaks = seq(0,35, by = 5),
+                      labels = seq(0,35, by = 5),
+                      limits = c(0,30))
+ipbes.plot.global
+
+ipbes.plot.global+
+  facet_wrap(aes(region))
+
+
+
+
 
 
 # mapping ----------------------------------------------------------------------
