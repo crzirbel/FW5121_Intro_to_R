@@ -383,10 +383,6 @@ ipbes.plot.global+
   facet_wrap(aes(region))
 
 
-
-
-
-
 # mapping ----------------------------------------------------------------------
 #manipulating, analyzing, and plotting shapefiles is an area of R that is currently underdevelopment.
 #you will see alot of different packages to manipulate shapefiles including sp, rgdal, and sf
@@ -423,6 +419,8 @@ levels(ipbes.sp$IPBES_regi_type)
 
 colors<-c("#BEDAFF", "#FFE5B2", "#FFD380", "#B9E1A5", "#89CD66", "#DAC4E8", 
           "#C19ED6", "#DDA4AD", "#CE6667", "#E5E1E0", "#CCCCCC")
+#Here I'm trying to pull specific colors to match the figure, usually this isn't your goal, but its important to use
+#colors that are printer/colorbind friendly. Use contrast appropriately.
 
 #Here I create a coordinates df to plot the region names
 ipbes.coords<-as.data.frame(sf::st_coordinates(st_point_on_surface(ipbes.sp)))
