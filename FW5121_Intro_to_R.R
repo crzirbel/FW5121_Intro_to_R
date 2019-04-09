@@ -21,7 +21,6 @@
 #' 7. Re-create some figures & maps!
 #' 8. Other resources for learning R?
 
-
 # R setup & basics ------------------------------------------------------
 
 ##Why use R?##
