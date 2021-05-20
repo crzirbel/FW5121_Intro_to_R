@@ -397,18 +397,18 @@ ipbes.sp<-st_read("shapefile/EEZv8_WVS_DIS_V3_ALL_final_v7disIPBES.shp") #file c
 #I used mapshaper.org to simplify the shapefile. I recommend doing this when working with large shapefiles
 #especially when you aren't looking for publication quality figures right away. This will greatly reduce plotting time.
 
-#The original shapefile contained over 19 million verticies. I simplified it to 2.5% of its orginal complexity
+#The original shapefile contained over 19 million verticies. I simplified it to 2.5% of its original complexity
 #Let's see how many verticies are there now
 sum(rapply(st_geometry(ipbes.sp), nrow))
-#Much simplier
+#Much simpler
 
-#The orginal file was also 293MB (too big for github)
+#The original file was also 293MB (too big for github)
 #This file is only 7.6MB
 
 #The unsimplified version of this file took >30 minutes to plot on my laptop.
 #The developers working on ggplot know about the plotting time issues and it is an active area of development.
 
-#To differenciate our regions and the type of protected area lets combine two character columns using paste()
+#To differentiate our regions and the type of protected area lets combine two character columns using paste()
 ipbes.sp$IPBES_regi_type<-as.factor(paste(ipbes.sp$IPBES_regi,ipbes.sp$type, sep= "_"))
 #now we have a new column "IPBES_regi_type" 
 
@@ -419,7 +419,7 @@ levels(ipbes.sp$IPBES_regi_type)
 colors<-c("#BEDAFF", "#FFE5B2", "#FFD380", "#B9E1A5", "#89CD66", "#DAC4E8", 
           "#C19ED6", "#DDA4AD", "#CE6667", "#E5E1E0", "#CCCCCC")
 #Here I'm trying to pull specific colors to match the figure, usually this isn't your goal, but its important to use
-#colors that are printer/colorbind friendly. Use contrast appropriately.
+#colors that are printer/colorblind friendly. Use contrast appropriately.
 
 #Here I create a coordinates df to plot the region names
 ipbes.coords<-as.data.frame(sf::st_coordinates(st_point_on_surface(ipbes.sp)))
